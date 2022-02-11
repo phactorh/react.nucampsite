@@ -29,126 +29,120 @@ class CommentForm extends Component {
     super(props);
 
     this.state = {
-    
       isModalOpen: false,
       author: "",
       rating: "",
       comment: "",
       author: false,
       rating: false,
-      comment: false
+      comment: false,
     };
-   
+
     this.toggleModal = this.toggleModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    
   }
   handleSubmit(values) {
-    console.log("Current state is: " + JSON.stringify(values));
-    alert("Current state is: " + JSON.stringify(values));
     this.toggleModal();
+    this.props.addComment(
+      this.props.campsiteId,
+      values.rating,
+      values.author,
+      values.text
+    );
   }
+
   toggleModal() {
     this.setState({
       isModalOpen: !this.state.isModalOpen,
     });
   }
+
   render() {
     return (
       <React.Fragment>
-      <Button outline onClick={this.toggleModal}>
-      <i className="fa fa-sign-in fa-lg" /> Submit Comments
-    </Button>
-    <Modal isOpen={this.state.isModalOpen} toggle={this.togggleModal}>
-    <ModalHeader toggle={this.togggleModal}>Submit Comments</ModalHeader>
-    <ModalBody>
-    <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+        <Button outline onClick={this.toggleModal}>
+          <i className="fa fa-sign-in fa-lg" /> Submit Comments
+        </Button>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.togggleModal}>
+          <ModalHeader toggle={this.togggleModal}>Submit Comments</ModalHeader>
+          <ModalBody>
+            <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
               <div className="form-group">
-                <Label htmlFor="rating" >
-                  Rating
-                </Label>
-                  <div></div>
-                  <Control.select className="form-control"
-                    model=".rating"
-                    id="rating"
-                    name="rating">
-                    <option></option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                  </Control.select>
-                    
-                    
-                 
-                
+                <Label htmlFor="rating">Rating</Label>
+                <div></div>
+                <Control.select
+                  className="form-control"
+                  model=".rating"
+                  id="rating"
+                  name="rating"
+                >
+                  <option></option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </Control.select>
               </div>
               <div className="form-group">
-                <Label htmlFor="name" >
-                  Your Name
-                </Label>
-                
-                  <Control.text className="form-control"
-                    model=".author"
-                    id="author"
-                    name="author"
-                    placeholder="Name"
-                    className="form-control"
-                    validators={{
-                      required,
-                      minLength: minLength(2),
-                      maxLength: maxLength(15),
-                    }}
-                  />
-                  <Errors
-                    className="text-danger"
-                    model=".author"
-                    show="touched"
-                    component="div"
-                    messages={{
-                      required: "Required",
-                      minLength: "Must be at least 2 characters",
-                      maxLength: "Must be 15 characters or less",
-                    }}
-                  />
-                
+                <Label htmlFor="name">Your Name</Label>
+
+                <Control.text
+                  className="form-control"
+                  model=".author"
+                  id="author"
+                  name="author"
+                  placeholder="Name"
+                  className="form-control"
+                  validators={{
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(15),
+                  }}
+                />
+                <Errors
+                  className="text-danger"
+                  model=".author"
+                  show="touched"
+                  component="div"
+                  messages={{
+                    required: "Required",
+                    minLength: "Must be at least 2 characters",
+                    maxLength: "Must be 15 characters or less",
+                  }}
+                />
               </div>
-              
+
               <div className="form-group">
-                <Label htmlFor="text" >
-                  Comment
-                </Label>
-                
-                  <Control.textarea className="form-control"
-                    model=".text"
-                    id="text"
-                    name="text"
-                    rows="6"
-                    className="form-control"
-                  />
-                
+                <Label htmlFor="text">Comment</Label>
+
+                <Control.textarea
+                  className="form-control"
+                  model=".text"
+                  id="text"
+                  name="text"
+                  rows="6"
+                  className="form-control"
+                />
               </div>
               <div className="form-group">
-               
-                  <Button type="submit" color="primary">
-                    Submit
-                  </Button>
-              
+                <Button type="submit" color="primary">
+                  Submit
+                </Button>
               </div>
             </LocalForm>
-    </ModalBody>
-  </Modal>
-  </React.Fragment>
-    )
+          </ModalBody>
+        </Modal>
+      </React.Fragment>
+    );
   }
 }
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, campsiteId }) {
   if (comments) {
     return (
       <div className="col-md-5 m-1">
         <h4>Comments</h4>
-        
+
         {comments.map((comments) => (
           <div key={comments.id}>
             {comments.text}
@@ -162,20 +156,18 @@ function RenderComments({ comments }) {
             <br />
             <br />
           </div>
-              
         ))}
-          
-          <CommentForm />
-          
+
+        <CommentForm campsiteId={campsiteId} addComment={addComment} />
       </div>
-    
     );
   } else {
-    return <div>
-      <Button>Submit Comments</Button>
-    </div>;
+    return (
+      <div>
+        <Button>Submit Comments</Button>
+      </div>
+    );
   }
- 
 }
 function RenderCampsite({ campsite }) {
   return (
@@ -208,10 +200,12 @@ function CampsiteInfo(props) {
         </div>
         <div className="row">
           <RenderCampsite campsite={props.campsite} />
-          <RenderComments comments={props.comments} />
-          
+          <RenderComments
+            comments={props.comments}
+            addComment={props.addComment}
+            campsiteId={props.campsite.id}
+          />
         </div>
-        
       </div>
     );
   } else {
