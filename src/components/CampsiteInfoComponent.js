@@ -212,6 +212,7 @@ function CampsiteInfo(props) {
       </div>
     );
   }
+  
   if (props.campsite) {
     return (
       <div className="container">
