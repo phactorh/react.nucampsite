@@ -6,18 +6,15 @@ import {
   CardBody,
   CardHeader,
   Media,
-  CardImg,
-  CardImgOverlay,
-  CardTitle,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { PARTNERS } from "../shared/partners";
+import { baseUrl } from "../shared/baseUrl"
 
 function RenderPartner({ partner }) {
   if (partner) {
     return (
       <React.Fragment>
-        <Media object src={partner.image} alt={partner.name} width="150" />
+        <Media object src={baseUrl + partner.image} alt={partner.name} width="150" />
         <Media body className="ml-5 mb-4">
           <Media heading>{partner.name}</Media>
           {partner.description}
@@ -29,7 +26,7 @@ function RenderPartner({ partner }) {
   }
 }
 function About(props) {
-  const partners = props.partners.map((partner) => {
+  const partners = props.partners.partners.map((partner) => {
     return (
       <Media tag="li" key={partner.id}>
         <RenderPartner partner={partner} />
